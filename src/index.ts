@@ -45,27 +45,34 @@ app.get(
   async (req: Request, res: Response): Promise<void> => {
     try {
       const numberParam = req.query.number as string;
+
       if (!numberParam) {
         res.status(400).json({ number: null, error: true });
         return;
       }
-      const number = parseInt(numberParam, 10);
-      const numberDigitSum = Math.abs(number);
 
-      if (isNaN(number)) {
-        res.status(400).json({ number: "alphabet", error: true });
+      if (!/^-?\d+$/.test(numberParam)) {
+        res.status(400).json({ number: numberParam, error: true });
         return;
       }
+
+      const number = parseInt(numberParam, 10);
+      const numberDigitSum = Math.abs(number);
 
       const properties: string[] = [];
       if (isArmstrong(number)) properties.push("armstrong");
       properties.push(number % 2 === 0 ? "even" : "odd");
 
       // Fetch fun fact from Numbers API
-      const funFactResponse = await axios.get(
-        `http://numbersapi.com/${number}/math?json`
-      );
-      const funFact = funFactResponse.data.text;
+      let funFact = "";
+      try {
+        const funFactResponse = await axios.get(
+          `http://numbersapi.com/${number}/math?json`
+        );
+        funFact = funFactResponse.data.text;
+      } catch (error) {
+        funFact = "Failed to retrieve fun fact";
+      }
 
       res.status(200).json({
         number,
