@@ -42,10 +42,13 @@ app.get(
   async (req: Request, res: Response): Promise<void> => {
     try {
       const numberParam = req.query.number as string;
+      if (!numberParam) {
+        res.status(400).json({ number: "required", error: true });
+      }
       const number = parseInt(numberParam, 10);
 
       if (isNaN(number)) {
-        res.status(400).json({ number: numberParam, error: true });
+        res.status(400).json({ number: "alphabet", error: true });
         return;
       }
 
@@ -59,7 +62,7 @@ app.get(
       );
       const funFact = funFactResponse.data.text;
 
-      res.json({
+      res.status(200).json({
         number,
         is_prime: isPrime(number),
         is_perfect: isPerfect(number),
