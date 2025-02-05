@@ -45,7 +45,7 @@ app.get(
       if (!numberParam) {
         res.status(400).json({ number: "required", error: true });
       }
-      const number = parseInt(numberParam, 10);
+      const number = Math.abs(parseInt(numberParam, 10));
 
       if (isNaN(number)) {
         res.status(400).json({ number: "alphabet", error: true });
