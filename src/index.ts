@@ -45,7 +45,8 @@ app.get(
       if (!numberParam) {
         res.status(400).json({ number: "required", error: true });
       }
-      const number = Math.abs(parseInt(numberParam, 10));
+      const number = parseInt(numberParam, 10);
+      const numberDigitSum = Math.abs(number);
 
       if (isNaN(number)) {
         res.status(400).json({ number: "alphabet", error: true });
@@ -67,7 +68,7 @@ app.get(
         is_prime: isPrime(number),
         is_perfect: isPerfect(number),
         properties,
-        digit_sum: number
+        digit_sum: numberDigitSum
           .toString()
           .split("")
           .reduce((sum, digit) => sum + parseInt(digit, 10), 0),
