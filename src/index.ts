@@ -57,7 +57,13 @@ app.get(
       }
 
       const number = parseInt(numberParam, 10);
-      const numberDigitSum = Math.abs(number);
+      const absoluteDigitsSum = number
+        .toString()
+        .replace("-", "")
+        .split("")
+        .reduce((sum, digit) => sum + parseInt(digit, 10), 0);
+
+      const digitSum = number < 0 ? -absoluteDigitsSum : absoluteDigitsSum;
 
       const properties: string[] = [];
       if (isArmstrong(number)) properties.push("armstrong");
@@ -79,10 +85,7 @@ app.get(
         is_prime: isPrime(number),
         is_perfect: isPerfect(number),
         properties,
-        digit_sum: numberDigitSum
-          .toString()
-          .split("")
-          .reduce((sum, digit) => sum + parseInt(digit, 10), 0),
+        digit_sum: digitSum,
         fun_fact: funFact
       });
     } catch (error) {
