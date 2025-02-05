@@ -1,10 +1,13 @@
 import express, { Request, Response, Application } from "express";
 import cors from "cors";
 import axios from "axios";
+import morgan from "morgan";
 
 const app: Application = express();
 const port = process.env.PORT || 3000;
 
+const logFormat = process.env.NODE_ENV === "production" ? "combined" : "dev";
+app.use(morgan(logFormat));
 app.use(cors());
 app.use(express.json());
 
@@ -43,7 +46,8 @@ app.get(
     try {
       const numberParam = req.query.number as string;
       if (!numberParam) {
-        res.status(400).json({ number: "required", error: true });
+        res.status(400).json({ number: null, error: true });
+        return;
       }
       const number = parseInt(numberParam, 10);
       const numberDigitSum = Math.abs(number);
